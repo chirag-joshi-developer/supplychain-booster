@@ -1,0 +1,19 @@
+services:
+  backend:
+    build: 
+      context: ./backend
+    restart: unless-stopped
+    env_file:
+      - ./backend/.env
+    networks:
+      - web
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.modus-backend.rule=Host(`supplychain-booster.chiragjoshi.online`)"
+      - "traefik.http.routers.modus-backend.entrypoints=websecure"
+      - "traefik.http.routers.modus-backend.tls.certresolver=letsencrypt"
+      - "traefik.http.services.modus-backend.loadbalancer.server.port=8000"
+
+networks:
+  web:
+    external: true
