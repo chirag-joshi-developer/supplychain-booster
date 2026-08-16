@@ -2,6 +2,8 @@ services:
   frontend:
     build: 
       context: ./frontend
+      args:
+        - VITE_API_URL=https://api.supplychain-booster.chiragjoshi.online
     restart: unless-stopped
     networks:
       - web
