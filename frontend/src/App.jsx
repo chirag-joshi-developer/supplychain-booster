@@ -17,7 +17,7 @@ function App() {
   const [isAsking, setIsAsking] = useState(false);
 
   // Constants
-  const API_BASE = 'http://localhost:8000';
+  const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
   const analyzeIndustry = async (e) => {
     e.preventDefault();

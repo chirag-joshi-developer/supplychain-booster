@@ -1,4 +1,17 @@
 services:
+  frontend:
+    build: 
+      context: ./frontend
+    restart: unless-stopped
+    networks:
+      - web
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.modus-frontend.rule=Host(`supplychain-booster.chiragjoshi.online`)"
+      - "traefik.http.routers.modus-frontend.entrypoints=websecure"
+      - "traefik.http.routers.modus-frontend.tls.certresolver=letsencrypt"
+      - "traefik.http.services.modus-frontend.loadbalancer.server.port=80"
+
   backend:
     build: 
       context: ./backend
@@ -9,7 +22,8 @@ services:
       - web
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.modus-backend.rule=Host(`supplychain-booster.chiragjoshi.online`)"
+      # The backend gets its own "api." subdomain
+      - "traefik.http.routers.modus-backend.rule=Host(`api.supplychain-booster.chiragjoshi.online`)"
       - "traefik.http.routers.modus-backend.entrypoints=websecure"
       - "traefik.http.routers.modus-backend.tls.certresolver=letsencrypt"
       - "traefik.http.services.modus-backend.loadbalancer.server.port=8000"
