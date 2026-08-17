@@ -67,7 +67,7 @@ Each object must have 'name' (string) and 'description' (string) matching the Va
     created_stages = []
     if groq_client:
         response = groq_client.chat.completions.create(
-            model="llama-3.1-8b-instant",
+            model="openai/gpt-oss-20b",
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_prompt}
@@ -121,7 +121,7 @@ Each object must have 'name' (string) and 'business_purpose' (string) matching t
     created_processes = []
     if groq_client:
         response = groq_client.chat.completions.create(
-            model="llama-3.1-8b-instant",
+            model="openai/gpt-oss-20b",
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_prompt}
@@ -194,7 +194,7 @@ If no evidence supports a claim, explicitly state 'no supporting evidence found'
 
     if groq_client:
         response = groq_client.chat.completions.create(
-            model="llama-3.1-8b-instant",
+            model="openai/gpt-oss-20b",
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_prompt}
@@ -357,7 +357,7 @@ Do not use outside knowledge. If the context does not contain the answer, say so
     answer_text = "Sorry, no answer could be generated."
     if groq_client:
         response = groq_client.chat.completions.create(
-            model="llama-3.1-8b-instant",
+            model="openai/gpt-oss-20b",
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_prompt}
