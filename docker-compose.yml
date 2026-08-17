@@ -20,6 +20,9 @@ services:
     restart: unless-stopped
     env_file:
       - ./backend/.env
+    volumes:
+      - backend_sqlite:/app/value_chain.db
+      - backend_chromadb:/app/chroma_db
     networks:
       - web
     labels:
@@ -33,3 +36,7 @@ services:
 networks:
   web:
     external: true
+
+volumes:
+  backend_sqlite:
+  backend_chromadb:
