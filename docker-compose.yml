@@ -20,6 +20,8 @@ services:
     restart: unless-stopped
     env_file:
       - ./backend/.env
+    environment:
+      - DATABASE_URL=sqlite:////app/data/value_chain.db
     volumes:
       - backend_data:/app/data
       - backend_chromadb:/app/chroma_db
