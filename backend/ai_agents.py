@@ -58,9 +58,10 @@ def research_value_chain(industry_name: str, db: Session) -> List[models.ValueCh
             print(f"Tavily search failed: {e}")
             raw_text = f"Simulated text: The {industry_name} industry typically involves R&D, Procurement, Manufacturing, Distribution, and Sales."
 
-    system_prompt = """You are an expert business analyst. Extract 5-8 sequential value chain stages from the provided research text. 
-Output MUST be a JSON object with a single key 'stages', containing a list of objects.
-Each object must have 'name' (string) and 'description' (string) matching the ValueChainStage schema."""
+    system_prompt = """You are an expert business analyst. Extract 5-8 sequential value chain stages from the provided research text.
+Respond with ONLY valid JSON — no markdown fences, no explanation, no extra text.
+The JSON must be an object with a single key 'stages', containing a list of objects.
+Each object must have 'name' (string) and 'description' (string)."""
     
     user_prompt = f"Extract stages for the {industry_name} industry from this text:\n\n{raw_text}"
     
@@ -113,8 +114,9 @@ def decompose_processes(stage: models.ValueChainStage, db: Session) -> List[mode
             print(f"Tavily search failed: {e}")
 
     system_prompt = """You are an expert business analyst. Identify 3-6 specific real-world processes within the provided value chain stage.
-Output MUST be a JSON object with a single key 'processes', containing a list of objects.
-Each object must have 'name' (string) and 'business_purpose' (string) matching the Process schema."""
+Respond with ONLY valid JSON — no markdown fences, no explanation, no extra text.
+The JSON must be an object with a single key 'processes', containing a list of objects.
+Each object must have 'name' (string) and 'business_purpose' (string)."""
     
     user_prompt = f"Identify processes for the '{stage.name}' stage in the {stage.industry.name} industry based on this text:\n\n{raw_text}"
     
@@ -171,24 +173,25 @@ def analyze_process(process: models.Process, db: Session) -> None:
         sources_text += f"[Source {i+1}]: {res['url']}\n{res['content']}\n\n"
 
     system_prompt = """You are an expert AI implementation consultant. Analyze the process and identify AI opportunities based strictly on the retrieved sources.
-You MUST output a JSON object with the following schema:
+Respond with ONLY valid JSON — no markdown fences, no explanation, no extra text.
+The JSON must be an object with exactly these keys:
 {
-  "current_challenges": "text",
-  "ai_opportunity": "text",
-  "relevant_ai_capabilities": "text",
-  "potential_benefit": "text",
-  "risk": "text",
-  "automation_potential": "low" | "medium" | "high",
-  "confidence_score": float (0.0 to 1.0, based on evidence quality),
+  "current_challenges": "string",
+  "ai_opportunity": "string",
+  "relevant_ai_capabilities": "string",
+  "potential_benefit": "string",
+  "risk": "string",
+  "automation_potential": "low" or "medium" or "high",
+  "confidence_score": number between 0.0 and 1.0,
   "evidence_links": [
     {
-      "source_url": "url from the provided text",
-      "source_title": "title",
-      "extracted_snippet": "exact snippet from text supporting the claim"
+      "source_url": "url string",
+      "source_title": "string",
+      "extracted_snippet": "string"
     }
   ]
 }
-If no evidence supports a claim, explicitly state 'no supporting evidence found' in that field."""
+If no evidence supports a claim, use the string 'no supporting evidence found' for that field."""
 
     user_prompt = f"Process: {process.name}\nIndustry: {process.stage.industry.name}\n\nSources:\n{sources_text}"
 
@@ -350,7 +353,8 @@ def answer_query(industry_id: int, question: str, db: Session) -> models.QueryLo
     
     system_prompt = """You are an AI assistant answering questions about an industry analysis.
 Answer the user's question strictly using the provided context (which are evidence snippets from the database).
-Do not use outside knowledge. If the context does not contain the answer, say so."""
+Do not use outside knowledge. If the context does not contain the answer, say so.
+Return plain text — do not wrap your answer in JSON."""
 
     user_prompt = f"Question: {question}\n\nContext:\n{context}"
     
