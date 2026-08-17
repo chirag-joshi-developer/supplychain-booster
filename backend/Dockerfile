@@ -24,5 +24,8 @@ COPY . .
 # Expose port 8000
 EXPOSE 8000
 
+# Ensure the data directory exists for SQLite
+RUN mkdir -p /app/data
+
 # Start the application
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]

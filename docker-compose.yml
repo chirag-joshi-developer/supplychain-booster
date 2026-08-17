@@ -21,7 +21,7 @@ services:
     env_file:
       - ./backend/.env
     volumes:
-      - backend_sqlite:/app/value_chain.db
+      - backend_data:/app/data
       - backend_chromadb:/app/chroma_db
     networks:
       - web
@@ -38,5 +38,5 @@ networks:
     external: true
 
 volumes:
-  backend_sqlite:
+  backend_data:
   backend_chromadb:
