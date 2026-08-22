@@ -13,13 +13,13 @@ A persistent, multi-stage pipeline that analyzes any given industry's value chai
 
 1. **UI Layer:** React + Tailwind CSS (Vite)
 2. **API/Backend:** FastAPI (Python) orchestrating the workflow async.
-3. **AI Intelligence Layer:** Groq (Llama 3.1 8B for cheap structuring, Llama 3.3 70B for synthesis).
+3. **AI Intelligence Layer:** OpenAI (gpt-4o-mini).
 4. **Data & Knowledge Layer:** SQLite for structured data (schema in `backend/models.py`), ChromaDB for vector evidence retrieval. Embedded `sentence-transformers` for local embeddings.
 5. **External Research:** Tavily API (free tier) for agentic web search.
 
 ### Fallback Logic (Service Unavailability)
 - **Web Search (Tavily):** If the Tavily API fails or runs out of credits, the system catches the exception and falls back to a simulated mock-research block (or could be easily swapped to DuckDuckGo/Serper with a 1-line change).
-- **LLM Inference (Groq):** If Groq is unavailable, the system safely catches the error and logs it. The architecture wraps the LLM calls in independent functions, making it trivial to swap the `groq_client` with an `OpenAI` client or a local `Ollama` instance without changing the core logic.
+- **LLM Inference (OpenAI):** If OpenAI is unavailable, the system safely catches the error and logs it. The architecture wraps the LLM calls in independent functions, making it trivial to swap the `openai_client` with another client or a local `Ollama` instance without changing the core logic.
 
 ## Setup Instructions
 
@@ -32,11 +32,11 @@ python -m venv venv
 # Windows: .\venv\Scripts\activate
 # Mac/Linux: source venv/bin/activate
 
-pip install -r requirements.txt # (Or manually pip install fastapi uvicorn sqlalchemy pydantic groq tavily-python chromadb sentence-transformers python-dotenv)
+pip install -r requirements.txt # (Or manually pip install fastapi uvicorn sqlalchemy pydantic openai tavily-python chromadb sentence-transformers python-dotenv)
 
 # Set API Keys
 # Create a .env file in the backend directory:
-# GROQ_API_KEY=your_key
+# OPENAI_API_KEY=your_key
 # TAVILY_API_KEY=your_key
 
 # Run the backend
@@ -55,7 +55,7 @@ Navigate to the provided localhost URL (typically `http://localhost:5173`).
 
 ## Model & Library Inventory
 
-- **LLM Inference:** Groq API (Llama-3.1-8b-instant, Llama-3.3-70b-versatile) - Commercial/Open-Weights
+- **LLM Inference:** OpenAI API (gpt-4o-mini) - Commercial
 - **Web Research:** Tavily API - Commercial Free Tier
 - **Embeddings:** `sentence-transformers` (`all-MiniLM-L6-v2`) - Apache 2.0
 - **Vector DB:** ChromaDB (Local Embedded) - Apache 2.0

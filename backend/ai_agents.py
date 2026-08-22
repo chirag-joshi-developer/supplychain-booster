@@ -2,7 +2,7 @@ import os
 import json
 from typing import List, Dict, Any
 from pydantic import ValidationError
-from groq import Groq
+from openai import OpenAI
 from tavily import TavilyClient
 from dotenv import load_dotenv
 from sqlalchemy.orm import Session
@@ -15,9 +15,9 @@ load_dotenv(override=True)
 
 # Initialize clients
 try:
-    groq_client = Groq(api_key=os.getenv("GROQ_API_KEY"))
+    openai_client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 except Exception:
-    groq_client = None
+    openai_client = None
 
 try:
     tavily_client = TavilyClient(api_key=os.getenv("TAVILY_API_KEY"))
@@ -66,9 +66,9 @@ Each object must have 'name' (string) and 'description' (string)."""
     user_prompt = f"Extract stages for the {industry_name} industry from this text:\n\n{raw_text}"
     
     created_stages = []
-    if groq_client:
-        response = groq_client.chat.completions.create(
-            model="openai/gpt-oss-20b",
+    if openai_client:
+        response = openai_client.chat.completions.create(
+            model="gpt-4o-mini",
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_prompt}
@@ -121,9 +121,9 @@ Each object must have 'name' (string) and 'business_purpose' (string)."""
     user_prompt = f"Identify processes for the '{stage.name}' stage in the {stage.industry.name} industry based on this text:\n\n{raw_text}"
     
     created_processes = []
-    if groq_client:
-        response = groq_client.chat.completions.create(
-            model="openai/gpt-oss-20b",
+    if openai_client:
+        response = openai_client.chat.completions.create(
+            model="gpt-4o-mini",
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_prompt}
@@ -195,9 +195,9 @@ If no evidence supports a claim, use the string 'no supporting evidence found' f
 
     user_prompt = f"Process: {process.name}\nIndustry: {process.stage.industry.name}\n\nSources:\n{sources_text}"
 
-    if groq_client:
-        response = groq_client.chat.completions.create(
-            model="openai/gpt-oss-20b",
+    if openai_client:
+        response = openai_client.chat.completions.create(
+            model="gpt-4o-mini",
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_prompt}
@@ -359,9 +359,9 @@ Return plain text — do not wrap your answer in JSON."""
     user_prompt = f"Question: {question}\n\nContext:\n{context}"
     
     answer_text = "Sorry, no answer could be generated."
-    if groq_client:
-        response = groq_client.chat.completions.create(
-            model="openai/gpt-oss-20b",
+    if openai_client:
+        response = openai_client.chat.completions.create(
+            model="gpt-4o-mini",
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_prompt}
